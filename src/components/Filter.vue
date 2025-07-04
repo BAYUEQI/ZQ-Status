@@ -84,27 +84,25 @@
   const currentFilter = ref('all')
   const searchQuery = ref('')
   
-  // 筛选选项
-  const filterOptions = computed(() => {
-    const activeMonitors = props.monitors.filter(m => m.status !== 1)
-    return [
-      {
-        label: '全部网站',
-        value: 'all',
-        count: activeMonitors.length
-      },
-      {
-        label: '正常网站',
-        value: 'online',
-        count: activeMonitors.filter(m => m.status === 0).length
-      },
-      {
-        label: '异常网站',
-        value: 'offline',
-        count: activeMonitors.filter(m => m.status === 9).length
-      }
-    ]
-  })
+  // 筛选选项（与原面板一致，兼容数字和字符串status）
+  const activeMonitors = computed(() => props.monitors.filter(m => m.status != 1 && m.status != '1'))
+  const filterOptions = computed(() => [
+    {
+      label: '全部网站',
+      value: 'all',
+      count: activeMonitors.value.length
+    },
+    {
+      label: '正常网站',
+      value: 'online',
+      count: activeMonitors.value.filter(m => m.status == 0).length
+    },
+    {
+      label: '异常网站',
+      value: 'offline',
+      count: activeMonitors.value.filter(m => m.status == 9).length
+    }
+  ])
   
   // 计算属性
   const filteredCount = computed(() => {
@@ -112,23 +110,17 @@
     return filtered.length
   })
   
-  const totalCount = computed(() => props.monitors.filter(m => m.status !== 1).length)
+  const totalCount = computed(() => activeMonitors.value.length)
   
   // 筛选逻辑
   const getFilteredMonitors = () => {
     let filtered = [...props.monitors]
-  
-    // 只显示未暂停的
-    filtered = filtered.filter(m => m.status !== 1)
-  
-    // 按状态筛选
+    filtered = filtered.filter(m => m.status != 1 && m.status != '1')
     if (currentFilter.value === 'online') {
-      filtered = filtered.filter(m => m.status === 0)
+      filtered = filtered.filter(m => m.status == 0)
     } else if (currentFilter.value === 'offline') {
-      filtered = filtered.filter(m => m.status === 9)
+      filtered = filtered.filter(m => m.status == 9)
     }
-  
-    // 按搜索词筛选
     if (searchQuery.value.trim()) {
       const query = searchQuery.value.toLowerCase().trim()
       filtered = filtered.filter(m => 
@@ -136,7 +128,6 @@
         m.url.toLowerCase().includes(query)
       )
     }
-  
     return filtered
   }
   
