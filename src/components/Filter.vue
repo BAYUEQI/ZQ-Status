@@ -85,22 +85,21 @@
   const searchQuery = ref('')
   
   // 筛选选项（与原面板一致，兼容数字和字符串status）
-  const activeMonitors = computed(() => props.monitors.filter(m => m.status != 1 && m.status != '1'))
   const filterOptions = computed(() => [
     {
       label: '全部网站',
       value: 'all',
-      count: activeMonitors.value.length
+      count: props.monitors.length
     },
     {
       label: '正常网站',
       value: 'online',
-      count: activeMonitors.value.filter(m => m.status != 9 && m.status != '9').length
+      count: props.monitors.filter(m => m.status == 2 || m.status == 1).length
     },
     {
       label: '异常网站',
       value: 'offline',
-      count: activeMonitors.value.filter(m => m.status == 9).length
+      count: props.monitors.filter(m => m.status == 9 || m.status == 0).length
     }
   ])
   
@@ -110,20 +109,19 @@
     return filtered.length
   })
   
-  const totalCount = computed(() => activeMonitors.value.length)
+  const totalCount = computed(() => props.monitors.length)
   
   // 筛选逻辑
   const getFilteredMonitors = () => {
     let filtered = [...props.monitors]
-    filtered = filtered.filter(m => m.status != 1 && m.status != '1')
     if (currentFilter.value === 'online') {
-      filtered = filtered.filter(m => m.status != 9 && m.status != '9')
+      filtered = filtered.filter(m => m.status == 2 || m.status == 1)
     } else if (currentFilter.value === 'offline') {
-      filtered = filtered.filter(m => m.status == 9)
+      filtered = filtered.filter(m => m.status == 9 || m.status == 0)
     }
     if (searchQuery.value.trim()) {
       const query = searchQuery.value.toLowerCase().trim()
-      filtered = filtered.filter(m => 
+      filtered = filtered.filter(m =>
         m.friendly_name.toLowerCase().includes(query) ||
         m.url.toLowerCase().includes(query)
       )
