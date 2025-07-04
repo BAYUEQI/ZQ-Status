@@ -1,28 +1,27 @@
 <template>
   <!-- 加载状态和错误提示 -->
-  <div v-if="!monitors?.length" class="flex items-center justify-center p-12">
-    <Icon v-if="!error"
-      icon="svg-spinners:180-ring-with-bg" 
-      class="w-12 h-12 text-gray-400 dark:text-gray-300 animate-spin"
-    />
-    <div v-else 
-         class="flex flex-col items-center gap-4 p-8 rounded-2xl
+  <div v-if="!monitors?.length">
+    <div v-if="error" class="flex items-center justify-center p-12">
+      <div class="flex flex-col items-center gap-4 p-8 rounded-2xl
            bg-red-50/50 dark:bg-red-900/20 
            border-2 border-red-100 dark:border-red-800/50
-           backdrop-blur-sm animate-fade"
-    >
-      <div class="relative">
-        <Icon 
-          icon="carbon:warning-filled" 
-          class="w-12 h-12 text-red-500/90 dark:text-red-400/90"
-        />
-        <div class="absolute inset-0 w-12 h-12 bg-red-500/20 dark:bg-red-400/20 rounded-full animate-ping" />
-      </div>
-      <div class="text-center">
-        <div class="text-red-600 dark:text-red-400 font-medium mb-1">
-          {{ error }}
+           backdrop-blur-sm animate-fade">
+        <div class="relative">
+          <Icon 
+            icon="carbon:warning-filled" 
+            class="w-12 h-12 text-red-500/90 dark:text-red-400/90"
+          />
+          <div class="absolute inset-0 w-12 h-12 bg-red-500/20 dark:bg-red-400/20 rounded-full animate-ping" />
+        </div>
+        <div class="text-center">
+          <div class="text-red-600 dark:text-red-400 font-medium mb-1">
+            {{ error }}
+          </div>
         </div>
       </div>
+    </div>
+    <div v-else class="flex items-center justify-center p-12">
+      <div class="text-gray-400 dark:text-gray-300 text-lg">未找到相关网站</div>
     </div>
   </div>
 
