@@ -85,28 +85,26 @@
   const searchQuery = ref('')
   
   // 筛选选项
-  const filterOptions = computed(() => [
-    {
-      label: '全部网站',
-      value: 'all',
-      count: props.monitors.length
-    },
-    {
-      label: '正常网站',
-      value: 'online',
-      count: props.monitors.filter(m => m.status === 0).length
-    },
-    {
-      label: '异常网站',
-      value: 'offline',
-      count: props.monitors.filter(m => m.status === 9).length
-    },
-    {
-      label: '暂停监控',
-      value: 'paused',
-      count: props.monitors.filter(m => m.status === 1).length
-    }
-  ])
+  const filterOptions = computed(() => {
+    const activeMonitors = props.monitors.filter(m => m.status !== 1)
+    return [
+      {
+        label: '监控网站',
+        value: 'all',
+        count: activeMonitors.length
+      },
+      {
+        label: '正常网站',
+        value: 'online',
+        count: activeMonitors.filter(m => m.status === 0).length
+      },
+      {
+        label: '异常网站',
+        value: 'offline',
+        count: activeMonitors.filter(m => m.status === 9).length
+      }
+    ]
+  })
   
   // 计算属性
   const filteredCount = computed(() => {
@@ -114,20 +112,20 @@
     return filtered.length
   })
   
-  const totalCount = computed(() => props.monitors.length)
+  const totalCount = computed(() => props.monitors.filter(m => m.status !== 1).length)
   
   // 筛选逻辑
   const getFilteredMonitors = () => {
     let filtered = [...props.monitors]
   
+    // 只显示未暂停的
+    filtered = filtered.filter(m => m.status !== 1)
+  
     // 按状态筛选
-    if (currentFilter.value !== 'all') {
-      const statusMap = {
-        online: 0,
-        offline: 9,
-        paused: 1
-      }
-      filtered = filtered.filter(m => m.status === statusMap[currentFilter.value])
+    if (currentFilter.value === 'online') {
+      filtered = filtered.filter(m => m.status === 0)
+    } else if (currentFilter.value === 'offline') {
+      filtered = filtered.filter(m => m.status === 9)
     }
   
     // 按搜索词筛选
