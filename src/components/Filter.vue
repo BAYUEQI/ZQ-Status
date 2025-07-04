@@ -95,7 +95,7 @@
     {
       label: '正常网站',
       value: 'online',
-      count: activeMonitors.value.filter(m => m.status == 0).length
+      count: activeMonitors.value.filter(m => m.status != 9 && m.status != '9').length
     },
     {
       label: '异常网站',
@@ -117,7 +117,7 @@
     let filtered = [...props.monitors]
     filtered = filtered.filter(m => m.status != 1 && m.status != '1')
     if (currentFilter.value === 'online') {
-      filtered = filtered.filter(m => m.status == 0)
+      filtered = filtered.filter(m => m.status != 9 && m.status != '9')
     } else if (currentFilter.value === 'offline') {
       filtered = filtered.filter(m => m.status == 9)
     }
