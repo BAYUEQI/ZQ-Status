@@ -89,7 +89,7 @@
     const activeMonitors = props.monitors.filter(m => m.status !== 1)
     return [
       {
-        label: '监控网站',
+        label: '全部网站',
         value: 'all',
         count: activeMonitors.length
       },
